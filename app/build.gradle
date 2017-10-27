@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'net.ltgt.errorprone'
 apply from: "$project.rootDir/config/quality.gradle"
 
 project.ext {
@@ -107,4 +108,16 @@ dependencies {
 
     // RxLint
     implementation "nl.littlerobots.rxlint:rxlint:$project.rxLintVersion"
+
+    //Nullaway
+    annotationProcessor "com.uber.nullaway:nullaway:0.1.7"
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+    errorprone "com.google.errorprone:error_prone_core:2.1.2"
+
+}
+
+tasks.withType(JavaCompile) {
+    if (!name.toLowerCase().contains("test")) {
+        options.compilerArgs += ["-Xep:NullAway:ERROR", "-XepOpt:NullAway:AnnotatedPackages=com.example"]
+    }
 }
